@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería de Productos</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="../css/products.css">
+    <link rel="stylesheet" href="../css/nav-categories.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-white fixed-top">
+        <div class="container d-flex justify-content-center" id="navbar-container">
+            <h3>Categoria: <span id="categoria-actual">Todos</span></h3>
+            <form class="container d-flex justify-content-center form-inline my-2 my-lg-0 ml-auto">
+                <div class="input-group">
+                    <input class="form-control" type="search" placeholder="Buscar Producto" aria-label="Buscar"
+                        id="input-search">
+                    <div class="input-group-append">
+                        <span class="material-symbols-outlined" id="btn-search">search</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </nav>
+
+
+    <main class="container">
+        <dotlottie-player id="charge-animation"
+            src="https://lottie.host/a322b458-335e-45fe-9f78-50a71caaa22e/IbHrmBUgYw.json" background="transparent"
+            speed="2" style="width: 300px; height: 300px;" loop autoplay>
+        </dotlottie-player>
+        <div class="row" id="cardsContainer">
+
+        </div>
+    </main>
+
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#nav-categorias"
+        aria-expanded="false" aria-controls="nav-categorias" id="btn-collapse-categorias">
+        <p id="btn-categorias-text">Categorias</p>
+    </button>
+
+    <div class="collapse show" id="nav-categorias">
+
+        <div class="container nav-inferior">
+            <div class="row">
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Todos">Todos <span class="material-symbols-outlined">
+                            language
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Hogar">Hogar <span class="material-symbols-outlined">
+                            cottage
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Cuadros">Cuadros <span class="material-symbols-outlined">
+                            planner_banner_ad_pt
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Lamparas">Lamparas <span class="material-symbols-outlined">
+                            light_group
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Infantil">Infantil <span class="material-symbols-outlined">
+                            child_care
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Minusvalidos">Minusválidos <span
+                            class="material-symbols-outlined">
+                            accessible_forward
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Jardineria">Jardineria <span
+                            class="material-symbols-outlined">
+                            psychiatry
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Ropa">Ropa <span class="material-symbols-outlined">
+                            steps
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Electrodomesticos">Electrodomésticos <span
+                            class="material-symbols-outlined">
+                            blender
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Animales">Animales <span class="material-symbols-outlined">
+                            raven
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Muebles">Muebles<span class="material-symbols-outlined">
+                            chair
+                        </span></a>
+                </div>
+
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
+                    <a class="nav-category-btn" data-filter="Deportes">Deportes <span
+                            class="material-symbols-outlined">
+                            sports_tennis
+                        </span></a>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 item">
+                    <a class="nav-category-btn" data-filter="Lotes">Lotes <span class="material-symbols-outlined">
+                            package_2
+                        </span></a>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 item">
+                    <a class="nav-category-btn" data-filter="Alimentacion">Alimentacion <span
+                            class="material-symbols-outlined">
+                            restaurant
+                        </span></a>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 item">
+                    <a class="nav-category-btn" data-filter="Economicos">Producto con Tara <span
+                            class="material-symbols-outlined">
+                            euro
+                        </span></a>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 item">
+                    <a class="nav-category-btn" data-filter="Varios">Varios <span class="material-symbols-outlined">
+                            videogame_asset
+                        </span></a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="border-bottom">
+
+        </div>
+
+    </div>
+
+    <script type="module" src="../js/products.js"></script>
+    <script type="module" src="../js/nav-categories.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Producto</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="../css/productoDetalle.css">
+</head>
+
+<body>
+
+    <div class="container text-center">
+        <h1 class="mt-4 nombre mt-0" id="nombre-text"></h1>
+        <hr>
+
+        <div id="carouselControls" class="carousel slide" data-ride="carousel">
+
+            <div class="carousel-inner">
+                <!-- Contenido del carrusel generado dinámicamente por JavaScript -->
+            </div>
+
+        </div>
+
+
+        <hr>
+        <div id="precios-container">
+            <p class="numbers"><strong>Precio Aquí</strong><br> <span id="precio-text"></span>&euro;</p>
+            <p class="numbers"><strong>Precio Amazon:</strong> <br> <span class="line-through"
+                    id="precio-amazon-text"></span>&euro;
+            </p>
+        </div>
+        <p class="lead" id="descripcion-text"></p>
+        <p class="numbers"><strong>Cantidad Disponible:</strong><span id="cantidad-text"></span></p>
+    </div>
+
+    <script type="module" src="../js/productoDetalle.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
