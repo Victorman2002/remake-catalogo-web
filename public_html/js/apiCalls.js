@@ -1,7 +1,7 @@
 
 async function getAllProductos() {
     try {
-        const response = await fetch('http://91.108.102.81:8080/productos', {
+        const response = await fetch('https://api-productos-images.onrender.com/productos', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ async function getAllProductos() {
 
 async function getProducto(productoId) {
     try {
-        const response = await fetch(`http://91.108.102.81:8080/productos/${productoId}`, {
+        const response = await fetch(`https://api-productos-images.onrender.com/productos/${productoId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -37,7 +37,7 @@ async function getProducto(productoId) {
 
 async function getImagesFromProduct(productoId) {
     try {
-        const response = await fetch(`http://91.108.102.81:8080/images/${productoId}`, {
+        const response = await fetch(`https://api-productos-images.onrender.com/producto-images/${productoId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ async function getImagesFromProduct(productoId) {
 
 async function fetchFirstImageName(productoId) {
     try {
-        const response = await fetch(`http://91.108.102.81:8080/firstImage/${productoId}`, {
+        const response = await fetch(`https://api-productos-images.onrender.com/producto-firstImage/${productoId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -73,7 +73,7 @@ async function fetchFirstImageName(productoId) {
 
 async function fetchImage(imageName) {
     try {
-        const response = await fetch(`http://91.108.102.81:3000/images/${imageName}`);
+        const response = await fetch(`https://api-productos-images.onrender.com/images/${imageName}`);
         if (!response.ok) {
             throw new Error('Error al obtener la imagen');
         }
