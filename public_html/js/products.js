@@ -3,14 +3,11 @@ import { handleSearch, FilterByCategory } from "./filtro.js";
 
 //Array donde estarán cacheados los productos del servidor
 let cachedProductList = [];
-let cardIndexShown = 0;
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    chargeAnimation(true)
-
     await chargeProductsToChache();
-    await generateCards(cachedProductList);
+    await generateCards(cachedProductList, 12);
 
     const searchButon = document.getElementById('btn-search');
     const searchEnter = document.getElementById('input-search');
@@ -41,98 +38,100 @@ async function chargeProductsToChache() {
     cachedProductList = await getAllProductos();
 }
 
-export async function generateCards(productsList) {
+export async function generateCards(productsList, itemsPerPage) {
+    const totalPages = Math.ceil(productsList.length / itemsPerPage);
+    let currentPage = 1;
 
-    chargeAnimation(true)
+    const prevPageButton = document.getElementById('prev-page');
+    const nextPageButton = document.getElementById('next-page');
 
-    cardIndexShown = 0;
-
-    const cardsContainer = document.getElementById('cardsContainer');
-    cardsContainer.innerHTML = '';
-
-    // Utilizamos un bucle for...of para poder utilizar await dentro del cuerpo del bucle
-    for (const product of productsList) {
-
-        cardIndexShown++;
-
-        // Obtener la URL de la imagen para el producto actual
-        let imageName = await fetchFirstImageName(product.idProducto);
-        imageName = imageName.url;
-        let imageSrc = await fetchImage(imageName);
-
-        // Creamos una función asíncrona dentro del bucle que espera la resolución de getImagesFromProduct
-        async function renderCard() {
-            cardsContainer.innerHTML += `
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <a href="./productoDetalle.html?id=${product.idProducto}" class="card-link">
-                        <div class="card" id="${cardIndexShown}">
-                        <h3 class="card-name">${product.nombre}</h3>
-                            <div id="image-card-container">
-                            <img src="../img/backGrounds/placeholder-image.jpg" data-src="${imageSrc}" class="card-img-top" alt="Image Product">
-                            </div>
-                            <div class="card-body">
-                                <p class="card-price"><span class="not-price">Aqui: </span>
-                                    ${(product.precio && typeof product.precio === 'number') ? (product.precio).toFixed(2) : parseFloat(product.precio).toFixed(2)}&euro;<br>
-                                    <span class="not-price">Amazon: </span><span class="texto-tachado">${product.precioAmazon}&euro;</span></p>
-                                <p class="card-description">${product.descripcion}</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            `;
+    // Actualiza la visualización de las flechas de acuerdo a la página actual
+    function updatePaginationButtons() {
+        if (currentPage === 1) {
+            prevPageButton.classList.add('disabled');
+            prevPageButton.style.opacity = '10%';
+        } else {
+            prevPageButton.classList.remove('disabled');
+            prevPageButton.style.opacity = '100%';
         }
 
-        // Esperamos la resolución de la función asíncrona antes de continuar con la siguiente iteración del bucle
-        await renderCard();
-
-        if (cardIndexShown % 12 == 0) {
-            //Parar la animacion cuando se hayan generado las cards
-            chargeAnimation(false);
+        if (currentPage === totalPages) {
+            nextPageButton.classList.add('disabled');
+            nextPageButton.style.opacity = '10%';
+        } else {
+            nextPageButton.classList.remove('disabled');
+            nextPageButton.style.opacity = '100%';
         }
-
     }
 
-    // Intersection Observer para que solo si las cartas estan visibles se
-    // cargen sus imagenes
-    observeIntersection('.card');
+    // Renderiza las tarjetas para la página actual
+    async function renderCurrentPage() {
+        chargeAnimation(true)
+        const paginationContainer = document.getElementById('page-navigation');
+        paginationContainer.style.display = 'none';
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, productsList.length);
 
-    //Para cuando se muestran menos de 12 cards se para tambien la animacion
-    if (cardIndexShown < 12) {
-        chargeAnimation(false);
+        const cardsContainer = document.getElementById('cardsContainer');
+        cardsContainer.innerHTML = '';
+
+        for (let i = startIndex; i < endIndex; i++) {
+            const product = productsList[i];
+            await renderCard(product);
+        }
+        paginationContainer.style.display = 'block';
+        chargeAnimation(false)
     }
+
+    // Actualiza la visualización de las flechas cuando se genera la página
+    updatePaginationButtons();
+    await renderCurrentPage();
+
+    // Maneja el clic en la flecha de retroceso
+    prevPageButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePaginationButtons();
+            renderCurrentPage();
+        }
+    });
+
+    // Maneja el clic en la flecha de avance
+    nextPageButton.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePaginationButtons();
+            renderCurrentPage();
+        }
+    });
 }
 
-// Función para observar la intersección de las cartas y cargar las imágenes
-function observeIntersection(selector) {
 
-    const options = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1 // Cambia este valor según tus necesidades
-    };
+// Renderiza una tarjeta de producto
+async function renderCard(product) {
+    // Obtener la URL de la imagen para el producto actual
+    let imageName = await fetchFirstImageName(product.idProducto);
+    imageName = imageName.url;
+    let imageSrc = await fetchImage(imageName);
 
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const card = entry.target;
-                console.log('Carta ' + card.id + ' en pantalla')
-                const image = card.querySelector('img');
-                const imageUrl = image.getAttribute('data-src');
-                image.src = imageUrl;
-                //observer.unobserve(card);
-            } else if (!entry.isIntersecting) {
-                const card = entry.target;
-                console.log('Carta ' + card.id + ' fuera de pantalla')
-                const image = card.querySelector('img');
-                image.src = '';
-            }
-        });
-    }, options);
-
-    const cards = document.querySelectorAll(selector);
-    cards.forEach(card => {
-        observer.observe(card);
-    });
+    cardsContainer.innerHTML += `
+    <div class="col-lg-4 col-md-6 col-sm-6">
+        <a href="./productoDetalle.html?id=${product.idProducto}" class="card-link">
+            <div class="card">
+            <h3 class="card-name">${product.nombre}</h3>
+                <div id="image-card-container">
+                <img src="${imageSrc}" class="card-img-top" alt="Image Product">
+                </div>
+                <div class="card-body">
+                    <p class="card-price"><span class="not-price">Aqui: </span>
+                        ${(product.precio && typeof product.precio === 'number') ? (product.precio).toFixed(2) : parseFloat(product.precio).toFixed(2)}&euro;<br>
+                        <span class="not-price">Amazon: </span><span class="texto-tachado">${product.precioAmazon}&euro;</span></p>
+                    <p class="card-description">${product.descripcion}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+`;
 }
 
 function chargeAnimation(itsVisible) {

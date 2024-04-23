@@ -17,7 +17,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-white fixed-top">
         <div class="container d-flex justify-content-center" id="navbar-container">
-            <h3>Categoria: <span id="categoria-actual">Todos</span></h3>
+            <h3><span id="categoria-actual">Todos</span></h3>
             <form class="container d-flex justify-content-center form-inline my-2 my-lg-0 ml-auto">
                 <div class="input-group">
                     <input class="form-control" type="search" placeholder="Buscar Producto" aria-label="Buscar"
@@ -39,6 +39,22 @@
         <div class="row" id="cardsContainer">
 
         </div>
+        <nav aria-label="Page navigation" id="page-navigation">
+            <div id="paginationContainer">
+                <span id="prev-page">
+                    <span class="material-symbols-outlined">
+                        arrow_back
+                    </span>
+                    Anterior
+                </span>
+                <span id="next-page">
+                    Siguiente
+                    <span class="material-symbols-outlined">
+                        arrow_forward
+                    </span>
+                </span>
+            </div>
+        </nav>
     </main>
 
     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#nav-categorias"
@@ -121,8 +137,7 @@
                 </div>
 
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-2 item">
-                    <a class="nav-category-btn" data-filter="Deportes">Deportes <span
-                            class="material-symbols-outlined">
+                    <a class="nav-category-btn" data-filter="Deportes">Deportes <span class="material-symbols-outlined">
                             sports_tennis
                         </span></a>
                 </div>
