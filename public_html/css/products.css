@@ -188,9 +188,13 @@ h1 {
 }
 
 .card-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 5px;
-    text-align: center;
-    height: fit-content;
+    height: 100px;
+    border: 1px solid black;
+    border-radius: 10px;
 }
 
 .card-price {
