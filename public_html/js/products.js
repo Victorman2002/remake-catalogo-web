@@ -179,7 +179,7 @@ function FilterByCategory(clickedCategory) {
     const products = getProductsListFromSessionLocalStorage();
     if (clickedCategory === 'Todos') {
         pageIsShowingFilteredProducts = false;
-        generateCards(getProductsListFromSessionLocalStorage, 12);
+        generateCards(getProductsListFromSessionLocalStorage(), 12);
     } else {
         filteredProducts = products.filter((product) => {
             return product.categoria === clickedCategory;
@@ -188,7 +188,7 @@ function FilterByCategory(clickedCategory) {
         generateCards(filteredProducts, 12);
     }
 }
-
+ 
 function chargeAnimation(itsVisible) {
     const animation = document.getElementById('charge-animation');
     const cardsContainer = document.getElementById('cardsContainer');
