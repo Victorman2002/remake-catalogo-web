@@ -1,23 +1,25 @@
 import { getAllProductos, fetchFirstImageName, fetchImage } from "./apiCalls.js";
-import { handleSearch, FilterByCategory } from "./filtro.js";
 
-//Array donde estarán cacheados los productos del servidor
-let cachedProductList = [];
+//Array donde estarán cacheados los productos filtrados por la acción del usuario
+let filteredProducts = [];
+let pageIsShowingFilteredProducts = false;
+let currentPage = 1;
+let totalPages;
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    await chargeProductsToChache();
-    await generateCards(cachedProductList, 12);
+    await chargeProductsToCache();
+    await generateCards(getProductsListFromSessionLocalStorage(), 12);
 
     const searchButon = document.getElementById('btn-search');
     const searchEnter = document.getElementById('input-search');
 
-    searchButon.addEventListener('click', () => handleSearch(cachedProductList));
+    searchButon.addEventListener('click', () => handleSearch(getProductsListFromSessionLocalStorage()));
 
     searchEnter.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
-            handleSearch(cachedProductList);
+            handleSearch(getProductsListFromSessionLocalStorage());
         }
     });
 
@@ -28,71 +30,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             //Añadir al h3 la categoria a la cual el usuario ha hecho click
             const categoriaText = document.getElementById('categoria-actual');
             categoriaText.innerText = btn.getAttribute('data-filter');
-            FilterByCategory(cachedProductList, btn.getAttribute('data-filter'));
+            FilterByCategory(btn.getAttribute('data-filter'));
         });
     })
 
 })
 
-async function chargeProductsToChache() {
-    cachedProductList = await getAllProductos();
-}
-
 export async function generateCards(productsList, itemsPerPage) {
-    const totalPages = Math.ceil(productsList.length / itemsPerPage);
-    let currentPage = 1;
+    let products = productsList;
+    totalPages = Math.ceil(products.length / itemsPerPage);
 
     const prevPageButton = document.getElementById('prev-page');
     const nextPageButton = document.getElementById('next-page');
 
-    // Actualiza la visualización de las flechas de acuerdo a la página actual
-    function updatePaginationButtons() {
-        if (currentPage === 1) {
-            prevPageButton.classList.add('disabled');
-            prevPageButton.style.opacity = '10%';
-        } else {
-            prevPageButton.classList.remove('disabled');
-            prevPageButton.style.opacity = '100%';
-        }
-
-        if (currentPage === totalPages) {
-            nextPageButton.classList.add('disabled');
-            nextPageButton.style.opacity = '10%';
-        } else {
-            nextPageButton.classList.remove('disabled');
-            nextPageButton.style.opacity = '100%';
-        }
-    }
-
-    // Renderiza las tarjetas para la página actual
-    async function renderCurrentPage() {
-        chargeAnimation(true)
-        const paginationContainer = document.getElementById('page-navigation');
-        paginationContainer.style.display = 'none';
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = Math.min(startIndex + itemsPerPage, productsList.length);
-
-        const cardsContainer = document.getElementById('cardsContainer');
-        cardsContainer.innerHTML = '';
-
-        for (let i = startIndex; i < endIndex; i++) {
-            const product = productsList[i];
-            await renderCard(product);
-        }
-        paginationContainer.style.display = 'block';
-        chargeAnimation(false)
-    }
-
     // Actualiza la visualización de las flechas cuando se genera la página
     updatePaginationButtons();
-    await renderCurrentPage();
+    await renderCurrentPage(itemsPerPage, products);
 
     // Maneja el clic en la flecha de retroceso
     prevPageButton.addEventListener('click', () => {
         if (currentPage > 1) {
             currentPage--;
             updatePaginationButtons();
-            renderCurrentPage();
+            renderCurrentPage(itemsPerPage, products);
         }
     });
 
@@ -101,13 +61,16 @@ export async function generateCards(productsList, itemsPerPage) {
         if (currentPage < totalPages) {
             currentPage++;
             updatePaginationButtons();
-            renderCurrentPage();
+            if (pageIsShowingFilteredProducts) {
+                products = filteredProducts;
+                renderCurrentPage(itemsPerPage, products);
+            } else {
+                renderCurrentPage(itemsPerPage, products);
+            }
         }
     });
 }
 
-
-// Renderiza una tarjeta de producto
 async function renderCard(product) {
     // Obtener la URL de la imagen para el producto actual
     let imageName = await fetchFirstImageName(product.idProducto);
@@ -132,6 +95,98 @@ async function renderCard(product) {
         </a>
     </div>
 `;
+}
+
+// Renderiza las tarjetas para la página actual
+async function renderCurrentPage(itemsPerPage, products) {
+    chargeAnimation(true)
+    const paginationContainer = document.getElementById('page-navigation');
+    paginationContainer.style.display = 'none';
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, products.length);
+
+    const cardsContainer = document.getElementById('cardsContainer');
+    cardsContainer.innerHTML = '';
+
+    for (let i = startIndex; i < endIndex; i++) {
+        const product = products[i];
+        await renderCard(product);
+    }
+
+    paginationContainer.style.display = 'block';
+    chargeAnimation(false)
+}
+
+// Actualiza la visualización de las flechas de acuerdo a la página actual
+function updatePaginationButtons() {
+    const prevPageButton = document.getElementById('prev-page');
+    const nextPageButton = document.getElementById('next-page');
+    if (currentPage === 1) {
+        prevPageButton.classList.add('disabled');
+        prevPageButton.style.opacity = '10%';
+    } else {
+        prevPageButton.classList.remove('disabled');
+        prevPageButton.style.opacity = '100%';
+    }
+
+    if (currentPage === totalPages) {
+        nextPageButton.classList.add('disabled');
+        nextPageButton.style.opacity = '10%';
+    } else {
+        nextPageButton.classList.remove('disabled');
+        nextPageButton.style.opacity = '100%';
+    }
+}
+
+async function chargeProductsToCache() {
+    try {
+        let productListJSON = await getAllProductos(); // Obtener los datos en formato JSON o cadena JSON
+        if (typeof productListJSON === 'string') {
+            productListJSON = JSON.parse(productListJSON); // Convertir la cadena JSON en objeto JavaScript si es necesario
+        }
+        sessionStorage.setItem('cachedProductList', JSON.stringify(productListJSON)); // Guardar la lista de productos en sessionStorage
+    } catch (error) {
+        console.error('Error al cargar productos en caché:', error);
+    }
+}
+
+function getProductsListFromSessionLocalStorage() {
+    const cachedProductListJSON = sessionStorage.getItem('cachedProductList');
+    if (cachedProductListJSON) {
+        return JSON.parse(cachedProductListJSON);
+    } else {
+        return null;
+    }
+}
+
+function handleSearch() {
+    const products = getProductsListFromSessionLocalStorage();
+    const searchInput = document.getElementById('input-search');
+    const searchTerm = searchInput.value.toLowerCase();
+
+    filteredProducts = products.filter((product) => {
+        return product.nombre.toLowerCase().includes(searchTerm);
+    });
+
+    if (filteredProducts.length === 0) {
+        alert('No se han encontrado productos que coincidan')
+    } else {
+        generateCards(filteredProducts, 12);
+    }
+}
+
+function FilterByCategory(clickedCategory) {
+    const products = getProductsListFromSessionLocalStorage();
+    if (clickedCategory === 'Todos') {
+        pageIsShowingFilteredProducts = false;
+        generateCards(getProductsListFromSessionLocalStorage, 12);
+    } else {
+        filteredProducts = products.filter((product) => {
+            return product.categoria === clickedCategory;
+        });
+        pageIsShowingFilteredProducts = true;
+        generateCards(filteredProducts, 12);
+    }
 }
 
 function chargeAnimation(itsVisible) {
