@@ -171,6 +171,7 @@ function handleSearch() {
     if (filteredProducts.length === 0) {
         alert('No se han encontrado productos que coincidan')
     } else {
+        currentPage = 1;
         generateCards(filteredProducts, 12);
     }
 }
@@ -179,6 +180,7 @@ function FilterByCategory(clickedCategory) {
     const products = getProductsListFromSessionLocalStorage();
     if (clickedCategory === 'Todos') {
         pageIsShowingFilteredProducts = false;
+        currentPage = 1;
         generateCards(getProductsListFromSessionLocalStorage(), 12);
     } else {
         filteredProducts = products.filter((product) => {
