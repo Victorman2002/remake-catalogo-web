@@ -186,6 +186,7 @@ function FilterByCategory(clickedCategory) {
         filteredProducts = products.filter((product) => {
             return product.categoria === clickedCategory;
         });
+        currentPage = 1;
         pageIsShowingFilteredProducts = true;
         generateCards(filteredProducts, 12);
     }

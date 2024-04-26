@@ -39,7 +39,7 @@ nav {
 }
 
 main {
-    margin-top: 100px;
+    margin-top: 150px;
     margin-bottom: 35px;
 }
 
@@ -190,7 +190,13 @@ h2 {
 
 @media (max-width:2000px) {
     main {
-        margin-top: 200px;
+        margin-top: 150px;
+    }
+}
+
+@media (max-width:1099px) {
+    main {
+        margin-top: 250px;
     }
 }
 

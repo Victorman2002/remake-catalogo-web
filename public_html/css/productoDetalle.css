@@ -18,7 +18,7 @@
 body {
     padding-top: 20px;
     background-color: rgb(247, 237, 223);
-    background-image: url('../img/backGrounds/madrid.jpg');
+    /* background-image: url('../img/backGrounds/madrid.jpg'); */
     display: flex;
 }
 
